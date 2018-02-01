@@ -23,4 +23,8 @@ public class CrawlService {
     public void add(StockInfo stockInfo) {
         stockInfoRepository.add(stockInfo);
     }
+
+    public StockInfo get(String id) {
+        return stockInfoRepository.get(id);
+    }
 }

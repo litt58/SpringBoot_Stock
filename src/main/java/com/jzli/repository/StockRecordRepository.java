@@ -1,12 +1,14 @@
 package com.jzli.repository;
 
-import com.jzli.bean.StockInfo;
+import com.jzli.bean.StockRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.ObjectUtils;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * =======================================================
@@ -19,20 +21,17 @@ import org.springframework.util.ObjectUtils;
  * ========================================================
  */
 @Repository
-public class StockInfoRepository {
+public class StockRecordRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public void add(StockInfo stockInfo) {
-        StockInfo stockInfo1 = get(stockInfo.getId());
-        if (ObjectUtils.isEmpty(stockInfo1)) {
-            mongoTemplate.insert(stockInfo);
-        }
+    public void add(StockRecord record) {
+        mongoTemplate.insert(record);
     }
 
-    public StockInfo get(String id) {
+    public List<StockRecord> list(String id, Date before, Date after) {
         Query query = new Query(Criteria.where("id").is(id));
-        return mongoTemplate.findOne(query, StockInfo.class);
+        List<StockRecord> stockRecords = mongoTemplate.find(query, StockRecord.class);
+        return stockRecords;
     }
-
 }
