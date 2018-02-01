@@ -33,6 +33,7 @@ repositories {
 dependencies {
     compile "org.springframework.boot:spring-boot-starter"
     compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-data-mongodb"
     compile "io.springfox:springfox-swagger-ui:2.2.2"
     compile "io.springfox:springfox-swagger2:2.2.2"
 }

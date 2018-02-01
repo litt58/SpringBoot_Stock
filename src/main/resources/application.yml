@@ -7,9 +7,15 @@ spring:
   devtools:
     restart:
       enabled: true
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: stock
 #是否开启swagger (true/false)
 swagger:
   enable: true
+
 
 
 
