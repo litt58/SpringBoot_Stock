@@ -1,0 +1,15 @@
+# 参考 http://www.tuicool.com/articles/veUjQba
+# Web容器配置
+server:
+  port: 7777
+#热部署
+spring:
+  devtools:
+    restart:
+      enabled: true
+#是否开启swagger (true/false)
+swagger:
+  enable: true
+
+
+
