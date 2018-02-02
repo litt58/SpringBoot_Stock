@@ -25,6 +25,7 @@ import java.io.IOException;
 @RequestMapping("/crawl")
 @Api(value = "/crawl", description = "抓取股票")
 public class CrawlController {
+
     @Autowired
     private CrawlService crawlService;
     @Autowired
@@ -39,7 +40,7 @@ public class CrawlController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加", httpMethod = "POST", notes = "添加股票信息")
     public String add(@RequestBody @ApiParam(value = "股票信息", required = true) StockInfo stockInfo) {
-        crawlService.add(stockInfo);
+        crawlService.addStockInfo(stockInfo);
         return "ok";
     }
 
@@ -47,5 +48,29 @@ public class CrawlController {
     @ApiOperation(value = "爬取网页", httpMethod = "GET", notes = "爬取网页")
     public String crawl(@RequestParam("url") String url) throws IOException {
         return httpService.get(url);
+    }
+
+    @RequestMapping("/searchStock")
+    @ApiOperation(value = "搜索个股信息", httpMethod = "GET", notes = "搜索个股信息")
+    public StockInfo searchStock(@RequestParam("id") String id, @RequestParam("stockMarketCode") String stockMarketCode) throws IOException {
+        return crawlService.searchStock(id, stockMarketCode);
+    }
+
+    @RequestMapping("/get")
+    @ApiOperation(value = "获取个股信息", httpMethod = "GET", notes = "获取个股信息")
+    public StockInfo get(@RequestParam("id") String id) throws IOException {
+        return crawlService.getStockInfo(id);
+    }
+
+    @RequestMapping("/delete")
+    @ApiOperation(value = "删除个股信息", httpMethod = "GET", notes = "删除个股信息")
+    public void delete(@RequestParam("id") String id) throws IOException {
+        crawlService.deleteStockInfo(id);
+    }
+
+    @RequestMapping("/loop")
+    @ApiOperation(value = "遍历股票信息", httpMethod = "GET", notes = "遍历股票信息")
+    public void loop() throws IOException {
+        crawlService.test();
     }
 }
