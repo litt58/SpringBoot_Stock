@@ -16,6 +16,8 @@ public class StockRecord {
     private String id;
     private Double start;
     private Double end;
+    private Double high;
+    private Double low;
     private Date date;
 
     public String getId() {
@@ -42,11 +44,39 @@ public class StockRecord {
         this.end = end;
     }
 
+    public Double getHigh() {
+        return high;
+    }
+
+    public void setHigh(Double high) {
+        this.high = high;
+    }
+
+    public Double getLow() {
+        return low;
+    }
+
+    public void setLow(Double low) {
+        this.low = low;
+    }
+
     public Date getDate() {
         return date;
     }
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "StockRecord{" +
+                "id='" + id + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", high=" + high +
+                ", low=" + low +
+                ", date=" + date +
+                '}';
     }
 }

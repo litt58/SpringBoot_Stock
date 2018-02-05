@@ -71,6 +71,6 @@ public class CrawlController {
     @RequestMapping("/loop")
     @ApiOperation(value = "遍历股票信息", httpMethod = "GET", notes = "遍历股票信息")
     public void loop() throws IOException {
-        crawlService.test();
+        crawlService.loopStockMarket();
     }
 }

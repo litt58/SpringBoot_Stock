@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
+
 /**
  * =======================================================
  *
@@ -25,6 +27,10 @@ import org.springframework.util.ObjectUtils;
 public class StockInfoRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    public List<StockInfo> list() {
+        return mongoTemplate.find(new Query(), StockInfo.class);
+    }
 
     /**
      * 新增
