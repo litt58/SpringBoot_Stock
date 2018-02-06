@@ -25,7 +25,7 @@ public class CrawlService {
     @Autowired
     private StockInfoRepository stockInfoRepository;
     @Autowired
-    private SinaStockInfoService sinaStockInfoService;
+    private SinaStockService sinaStockService;
 
     /**
      * 新浪股票上海市场标识
@@ -70,7 +70,7 @@ public class CrawlService {
                 sb.append("0");
             }
             sb.append(s);
-            sinaStockInfoService.searchStock(sb.toString(), sinaStockShanghai);
+            sinaStockService.searchStock(sb.toString(), sinaStockShanghai);
         }
         logger.info("同步上海市场股票信息总用时:" + (System.currentTimeMillis() - start) + "毫秒");
     }
@@ -90,7 +90,7 @@ public class CrawlService {
                 sb.append("0");
             }
             sb.append(s);
-            sinaStockInfoService.searchStock(sb.toString(), sinaStockShenzhen);
+            sinaStockService.searchStock(sb.toString(), sinaStockShenzhen);
         }
         logger.info("同步深圳市场股票信息:" + (System.currentTimeMillis() - start) + "毫秒");
 
@@ -111,12 +111,16 @@ public class CrawlService {
                 sb.append("0");
             }
             sb.append(s);
-            sinaStockInfoService.searchStock(sb.toString(), sinaStockShanghai);
+            sinaStockService.searchStock(sb.toString(), sinaStockShanghai);
         }
         logger.info("同步创业板股票信息:" + (System.currentTimeMillis() - start) + "毫秒");
     }
 
     public StockInfo searchStock(String stockId, String stockMarket) {
-        return sinaStockInfoService.searchStock(stockId, stockMarket);
+        return sinaStockService.searchStock(stockId, stockMarket);
+    }
+
+    public String searchStockHistory(String stockId, String year, String quarter) throws Exception {
+        return sinaStockService.getHistory(stockId, year, quarter);
     }
 }

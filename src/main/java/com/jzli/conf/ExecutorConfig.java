@@ -25,7 +25,7 @@ public class ExecutorConfig implements AsyncConfigurer {
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setMaxPoolSize(20);
+        executor.setMaxPoolSize(50);
         executor.setCorePoolSize(5);
         executor.setQueueCapacity(100);
         executor.setKeepAliveSeconds(30);

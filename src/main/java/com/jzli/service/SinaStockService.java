@@ -2,6 +2,9 @@ package com.jzli.service;
 
 import com.jzli.bean.StockInfo;
 import com.jzli.repository.StockInfoRepository;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
+import org.htmlcleaner.XPatherException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
@@ -22,14 +26,26 @@ import java.io.IOException;
  * ========================================================
  */
 @Service
-public class SinaStockInfoService {
+public class SinaStockService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private StockInfoRepository stockInfoRepository;
     @Autowired
     private HttpService httpService;
 
+    private HtmlCleaner cleaner;
+
     private final String sinaStockInfoUrl = "http://hq.sinajs.cn/list";
+
+    private final String sinaStockHistoryUrl = "http://money.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/";
+    private final String YEAR = "year";
+    private final String QUARTER = "jidu";
+    private final String POSTFIX = ".phtml";
+
+    @PostConstruct
+    public void init() {
+        cleaner = new HtmlCleaner();
+    }
 
     /**
      * 搜索指定的股票信息
@@ -100,4 +116,25 @@ public class SinaStockInfoService {
         }
         return stockInfo;
     }
+
+    public String getHistory(String code, String year, String quarter) throws IOException, XPatherException {
+        StringBuilder sb = new StringBuilder();
+        sb.append(sinaStockHistoryUrl).append(code).append(POSTFIX)
+                .append("?").append(YEAR).append("=").append(year)
+                .append("&").append(QUARTER).append("=").append(quarter);
+        String s = httpService.get(sb.toString());
+        System.out.println(s);
+        TagNode root = cleaner.clean(s);
+        String xpath = "/body/div[@id='wrap']/div[@id='main']/div[@id='center']/div[@class='centerImgBlk']/div[@class='tagmain']/table[@class='table']/tbody";
+        xpath = "//div[@id='wrap']/div[@id='main']/div[@id='center']/div[@class='centerImgBlk']/div[@class='tagmain']/table[@id='FundHoldSharesTable']";
+        Object[] objects = root.evaluateXPath(xpath);
+        for (Object obj : objects) {
+            if (obj instanceof TagNode) {
+                TagNode target = (TagNode) obj;
+                System.out.println(target);
+            }
+        }
+        return s;
+    }
+
 }

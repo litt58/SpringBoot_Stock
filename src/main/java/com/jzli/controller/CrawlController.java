@@ -73,4 +73,10 @@ public class CrawlController {
     public void loop() throws IOException {
         crawlService.loopStockMarket();
     }
+
+    @RequestMapping("/getHistory")
+    @ApiOperation(value = "获取个股信息历史信息", httpMethod = "GET", notes = "获取个股信息历史信息")
+    public String getHistory(@RequestParam("id") String id, @RequestParam("year") String year, @RequestParam("quarter") String quarter) throws Exception {
+        return crawlService.searchStockHistory(id, year, quarter);
+    }
 }
