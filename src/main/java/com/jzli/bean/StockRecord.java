@@ -14,6 +14,7 @@ import java.util.Date;
  */
 public class StockRecord {
     private String id;
+    private String code;
     private Double start;
     private Double end;
     private Double high;
@@ -26,6 +27,14 @@ public class StockRecord {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Double getStart() {
@@ -72,6 +81,7 @@ public class StockRecord {
     public String toString() {
         return "StockRecord{" +
                 "id='" + id + '\'' +
+                ", code='" + code + '\'' +
                 ", start=" + start +
                 ", end=" + end +
                 ", high=" + high +

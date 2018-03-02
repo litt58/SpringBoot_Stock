@@ -1,19 +1,21 @@
 package com.jzli.service;
 
 import com.jzli.bean.StockInfo;
+import com.jzli.bean.StockRecord;
 import com.jzli.repository.StockInfoRepository;
-import org.htmlcleaner.HtmlCleaner;
-import org.htmlcleaner.TagNode;
+import com.jzli.repository.StockRecordRepository;
 import org.htmlcleaner.XPatherException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * =======================================================
@@ -31,21 +33,17 @@ public class SinaStockService {
     @Autowired
     private StockInfoRepository stockInfoRepository;
     @Autowired
+    private StockRecordRepository stockRecordRepository;
+    @Autowired
     private HttpService httpService;
 
-    private HtmlCleaner cleaner;
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
 
     private final String sinaStockInfoUrl = "http://hq.sinajs.cn/list";
 
-    private final String sinaStockHistoryUrl = "http://money.finance.sina.com.cn/corp/go.php/vMS_MarketHistory/stockid/";
-    private final String YEAR = "year";
-    private final String QUARTER = "jidu";
-    private final String POSTFIX = ".phtml";
+    //http://quotes.money.163.com/service/chddata.html?code=CODE&start=START&end=END&fields=TCLOSE;HIGH;LOW;TOPEN;LCLOSE;CHG;PCHG;VOTURNOVER
+    private final String sotckHIstoryCsvUrl = "http://quotes.money.163.com/service/chddata.html?code=CODE&start=START&end=END&fields=TCLOSE;HIGH;LOW;TOPEN";
 
-    @PostConstruct
-    public void init() {
-        cleaner = new HtmlCleaner();
-    }
 
     /**
      * 搜索指定的股票信息
@@ -55,7 +53,7 @@ public class SinaStockService {
      * @return
      * @throws IOException
      */
-    @Async
+//    @Async
     public StockInfo searchStock(String stockId, String stockMarket) {
         StockInfo stockInfo = null;
         StringBuilder sb = new StringBuilder();
@@ -82,7 +80,7 @@ public class SinaStockService {
      * @param result
      * @return
      */
-    public static StockInfo dealStockInfoResult(String result) {
+    public StockInfo dealStockInfoResult(String result) {
         StockInfo stockInfo = null;
         String[] split = result.split("=");
         if (!ObjectUtils.isEmpty(split)
@@ -117,24 +115,58 @@ public class SinaStockService {
         return stockInfo;
     }
 
-    public String getHistory(String code, String year, String quarter) throws IOException, XPatherException {
+    public List<StockRecord> crawlStockHistory(String code, String start, String end) throws IOException, XPatherException {
+        String url = sotckHIstoryCsvUrl;
         StringBuilder sb = new StringBuilder();
-        sb.append(sinaStockHistoryUrl).append(code).append(POSTFIX)
-                .append("?").append(YEAR).append("=").append(year)
-                .append("&").append(QUARTER).append("=").append(quarter);
-        String s = httpService.get(sb.toString());
-        System.out.println(s);
-        TagNode root = cleaner.clean(s);
-        String xpath = "/body/div[@id='wrap']/div[@id='main']/div[@id='center']/div[@class='centerImgBlk']/div[@class='tagmain']/table[@class='table']/tbody";
-        xpath = "//div[@id='wrap']/div[@id='main']/div[@id='center']/div[@class='centerImgBlk']/div[@class='tagmain']/table[@id='FundHoldSharesTable']";
-        Object[] objects = root.evaluateXPath(xpath);
-        for (Object obj : objects) {
-            if (obj instanceof TagNode) {
-                TagNode target = (TagNode) obj;
-                System.out.println(target);
+        if (code.startsWith("6")) {
+            //代表上海
+            sb.append("0").append(code);
+        } else {
+            //代表深圳
+            sb.append("1").append(code);
+        }
+        url = url.replace("CODE", sb.toString());
+        url = url.replace("START", start);
+        url = url.replace("END", end);
+        String result = httpService.get(url);
+        List<StockRecord> stockRecords = dealStockHistoryInfoResult(result);
+        stockRecordRepository.addAll(stockRecords);
+        return stockRecords;
+    }
+
+    /**
+     * 处理历史数据
+     *
+     * @param result
+     */
+    private List<StockRecord> dealStockHistoryInfoResult(String result) {
+        List list = null;
+        if (!ObjectUtils.isEmpty(result)) {
+            list = new LinkedList<StockRecord>();
+            String[] split = result.split("\r\n");
+            for (int n = split.length, i = 1; i < n; i++) {
+                String s = split[i];
+                String[] strings = s.split(",");
+                if (!ObjectUtils.isEmpty(strings) && strings.length == 7) {
+                    StockRecord record;
+                    try {
+                        record = new StockRecord();
+                        record.setDate(sdf.parse(strings[0]));
+                        record.setCode(strings[1].replace("'", ""));
+                        record.setEnd(Double.parseDouble(strings[3]));
+                        record.setHigh(Double.parseDouble(strings[4]));
+                        record.setLow(Double.parseDouble(strings[5]));
+                        record.setStart(Double.parseDouble(strings[6]));
+                        record.setId(record.getCode() + "-" + record.getDate().getTime());
+                        list.add(record);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
             }
         }
-        return s;
+        return list;
     }
 
 }

@@ -1,13 +1,14 @@
 package com.jzli.service;
 
 import com.jzli.bean.StockInfo;
-import com.jzli.repository.StockInfoRepository;
+import com.jzli.bean.StockRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * =======================================================
@@ -23,8 +24,6 @@ import java.io.IOException;
 public class CrawlService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
-    private StockInfoRepository stockInfoRepository;
-    @Autowired
     private SinaStockService sinaStockService;
 
     /**
@@ -35,18 +34,6 @@ public class CrawlService {
      * 新浪股票深圳市场标识
      */
     private final String sinaStockShenzhen = "sz";
-
-    public void addStockInfo(StockInfo stockInfo) {
-        stockInfoRepository.add(stockInfo);
-    }
-
-    public StockInfo getStockInfo(String id) {
-        return stockInfoRepository.get(id);
-    }
-
-    public void deleteStockInfo(String id) {
-        stockInfoRepository.delete(id);
-    }
 
 
     public void loopStockMarket() throws IOException {
@@ -83,7 +70,7 @@ public class CrawlService {
     public void loopShenzhen() throws IOException {
         long start = System.currentTimeMillis();
         StringBuilder sb;
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 2100; i++) {
             sb = new StringBuilder();
             String s = Integer.toString(i);
             for (int j = 0; j < 6 - s.length(); j++) {
@@ -104,14 +91,14 @@ public class CrawlService {
     public void loopchuangye() throws IOException {
         long start = System.currentTimeMillis();
         StringBuilder sb;
-        for (int i = 0; i < 800; i++) {
+        for (int i = 0; i < 1000; i++) {
             sb = new StringBuilder("3");
             String s = Integer.toString(i);
             for (int j = 0; j < 5 - s.length(); j++) {
                 sb.append("0");
             }
             sb.append(s);
-            sinaStockService.searchStock(sb.toString(), sinaStockShanghai);
+            sinaStockService.searchStock(sb.toString(), sinaStockShenzhen);
         }
         logger.info("同步创业板股票信息:" + (System.currentTimeMillis() - start) + "毫秒");
     }
@@ -120,7 +107,7 @@ public class CrawlService {
         return sinaStockService.searchStock(stockId, stockMarket);
     }
 
-    public String searchStockHistory(String stockId, String year, String quarter) throws Exception {
-        return sinaStockService.getHistory(stockId, year, quarter);
+    public List<StockRecord> crawlStockHistory(String stockId, String start, String end) throws Exception {
+        return sinaStockService.crawlStockHistory(stockId, start, end);
     }
 }
