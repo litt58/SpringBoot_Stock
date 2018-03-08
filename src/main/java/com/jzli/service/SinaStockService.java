@@ -4,7 +4,6 @@ import com.jzli.bean.StockInfo;
 import com.jzli.bean.StockRecord;
 import com.jzli.repository.StockInfoRepository;
 import com.jzli.repository.StockRecordRepository;
-import org.htmlcleaner.XPatherException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +114,7 @@ public class SinaStockService {
         return stockInfo;
     }
 
-    public List<StockRecord> crawlStockHistory(String code, String start, String end) throws IOException, XPatherException {
+    public List<StockRecord> crawlStockHistory(String code, String start, String end) throws IOException, ParseException {
         String url = sotckHIstoryCsvUrl;
         StringBuilder sb = new StringBuilder();
         if (code.startsWith("6")) {
@@ -139,7 +138,7 @@ public class SinaStockService {
      *
      * @param result
      */
-    private List<StockRecord> dealStockHistoryInfoResult(String result) {
+    private List<StockRecord> dealStockHistoryInfoResult(String result) throws ParseException {
         List list = null;
         if (!ObjectUtils.isEmpty(result)) {
             list = new LinkedList<StockRecord>();
@@ -149,20 +148,16 @@ public class SinaStockService {
                 String[] strings = s.split(",");
                 if (!ObjectUtils.isEmpty(strings) && strings.length == 7) {
                     StockRecord record;
-                    try {
-                        record = new StockRecord();
-                        record.setTime(strings[0]);
-                        record.setDate(sdf.parse(strings[0]));
-                        record.setCode(strings[1].replace("'", ""));
-                        record.setEnd(Double.parseDouble(strings[3]));
-                        record.setHigh(Double.parseDouble(strings[4]));
-                        record.setLow(Double.parseDouble(strings[5]));
-                        record.setStart(Double.parseDouble(strings[6]));
-                        record.setId(record.getCode() + "-" + record.getDate().getTime());
-                        list.add(record);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    record = new StockRecord();
+                    record.setTime(strings[0]);
+                    record.setDate(sdf.parse(strings[0]));
+                    record.setCode(strings[1].replace("'", ""));
+                    record.setEnd(Double.parseDouble(strings[3]));
+                    record.setHigh(Double.parseDouble(strings[4]));
+                    record.setLow(Double.parseDouble(strings[5]));
+                    record.setStart(Double.parseDouble(strings[6]));
+                    record.setId(record.getCode() + "-" + record.getDate().getTime());
+                    list.add(record);
 
                 }
             }
