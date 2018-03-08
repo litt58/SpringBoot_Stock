@@ -40,6 +40,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.alibaba:fastjson:1.2.45'
     compile 'net.sourceforge.htmlcleaner:htmlcleaner:2.8'
+    compile 'org.mongodb.morphia:morphia:1.1.1'
 
 //    compile group: 'org.apache.wss4j', name: 'wss4j-ws-security-dom', version: '2.2.1'
 //    compile group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: '3.1.11'

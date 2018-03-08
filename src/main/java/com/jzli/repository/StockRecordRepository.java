@@ -26,7 +26,6 @@ public class StockRecordRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-
     /**
      * 获取指定的股票历史信息
      *
@@ -51,7 +50,21 @@ public class StockRecordRepository {
     }
 
     public List<StockRecord> list(String code, Date start, Date end) {
-        Query query = new Query(Criteria.where("code").is(code));
+        Query query = new Query();
+        Criteria code1 = Criteria.where("code").is(code);
+        Criteria date=null;
+        if (!ObjectUtils.isEmpty(start)) {
+            date = Criteria.where("date").gte(start);
+        }
+        if (!ObjectUtils.isEmpty(end)) {
+            if (!ObjectUtils.isEmpty(date)) {
+                date = date.lte(end);
+            } else {
+                date = Criteria.where("date").lte(end);
+            }
+        }
+        Criteria criteria = code1.andOperator(date);
+        query.addCriteria(criteria);
         List<StockRecord> stockRecords = mongoTemplate.find(query, StockRecord.class);
         return stockRecords;
     }

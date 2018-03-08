@@ -19,6 +19,7 @@ public class StockRecord {
     private Double end;
     private Double high;
     private Double low;
+    private String time;
     private Date date;
 
     public String getId() {
@@ -69,6 +70,14 @@ public class StockRecord {
         this.low = low;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -86,6 +95,7 @@ public class StockRecord {
                 ", end=" + end +
                 ", high=" + high +
                 ", low=" + low +
+                ", time='" + time + '\'' +
                 ", date=" + date +
                 '}';
     }

@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Service
 public class StockService {
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 
     @Autowired

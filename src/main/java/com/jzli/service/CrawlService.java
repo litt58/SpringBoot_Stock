@@ -103,7 +103,7 @@ public class CrawlService {
         logger.info("同步创业板股票信息:" + (System.currentTimeMillis() - start) + "毫秒");
     }
 
-    public StockInfo searchStock(String stockId, String stockMarket) {
+    public StockInfo crawlStock(String stockId, String stockMarket) {
         return sinaStockService.searchStock(stockId, stockMarket);
     }
 

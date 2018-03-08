@@ -37,7 +37,7 @@ public class SinaStockService {
     @Autowired
     private HttpService httpService;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String sinaStockInfoUrl = "http://hq.sinajs.cn/list";
 
@@ -151,6 +151,7 @@ public class SinaStockService {
                     StockRecord record;
                     try {
                         record = new StockRecord();
+                        record.setTime(strings[0]);
                         record.setDate(sdf.parse(strings[0]));
                         record.setCode(strings[1].replace("'", ""));
                         record.setEnd(Double.parseDouble(strings[3]));

@@ -29,10 +29,10 @@ public class CrawlController {
     @Autowired
     private CrawlService crawlService;
 
-    @RequestMapping("/searchStock")
+    @RequestMapping("/crawlStock")
     @ApiOperation(value = "搜索个股信息", httpMethod = "GET", notes = "搜索个股信息")
-    public StockInfo searchStock(@RequestParam("id") String id, @RequestParam("stockMarketCode") String stockMarketCode) throws IOException {
-        return crawlService.searchStock(id, stockMarketCode);
+    public StockInfo crawlStock(@RequestParam("code") String code, @RequestParam("stockMarketCode") String stockMarketCode) throws IOException {
+        return crawlService.crawlStock(code, stockMarketCode);
     }
 
 
@@ -44,8 +44,8 @@ public class CrawlController {
 
     @RequestMapping("/crawlStockHistory")
     @ApiOperation(value = "抓取个股信息历史信息", httpMethod = "GET", notes = "抓取个股信息历史信息")
-    public void crawlStockHistory(@RequestParam("id") String id, @RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
-        crawlService.crawlStockHistory(id, start, end);
+    public void crawlStockHistory(@RequestParam("code") String code, @RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
+        crawlService.crawlStockHistory(code, start, end);
     }
 
 }
