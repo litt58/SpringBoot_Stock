@@ -27,7 +27,6 @@ import java.util.List;
 public class StockService {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-
     @Autowired
     private StockInfoRepository stockInfoRepository;
     @Autowired
