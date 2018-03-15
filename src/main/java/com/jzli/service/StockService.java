@@ -6,7 +6,9 @@ import com.jzli.repository.StockInfoRepository;
 import com.jzli.repository.StockRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -39,17 +41,29 @@ public class StockService {
         stockInfoRepository.delete(id);
     }
 
-    public List<StockRecord> getStockHistory(String code, String start, String end) {
-        Date startDate = null;
-        Date endDate = null;
-        try {
-            startDate = sdf.parse(start);
-        } catch (Exception e) {
-        }
-        try {
-            endDate = sdf.parse(end);
-        } catch (Exception e) {
-        }
+    public List<StockRecord> getStockHistory(String code, String start, String end) throws ParseException {
+        Date startDate = sdf.parse(start);
+        Date endDate = sdf.parse(end);
         return stockRecordRepository.list(code, startDate, endDate);
+    }
+
+    public StockRecord getHigh(String code, String start, String end) throws ParseException {
+        Date startDate = getDate(start);
+        Date endDate = getDate(end);
+        return stockRecordRepository.getHigh(code, startDate, endDate);
+    }
+
+    public StockRecord getLow(String code, String start, String end) throws ParseException {
+        Date startDate = getDate(start);
+        Date endDate = getDate(end);
+        return stockRecordRepository.getLow(code, startDate, endDate);
+    }
+
+    public Date getDate(String time) throws ParseException {
+        Date date = null;
+        if (!ObjectUtils.isEmpty(time)) {
+            date = sdf.parse(time);
+        }
+        return date;
     }
 }
