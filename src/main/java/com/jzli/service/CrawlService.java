@@ -8,6 +8,7 @@ import com.jzli.repository.StockRecordRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -43,91 +44,6 @@ public class CrawlService {
 
     //http://quotes.money.163.com/service/chddata.html?code=CODE&start=START&end=END&fields=TCLOSE;HIGH;LOW;TOPEN;LCLOSE;CHG;PCHG;VOTURNOVER
     private final String sotckHIstoryCsvUrl = "http://quotes.money.163.com/service/chddata.html?code=CODE&start=START&end=END&fields=TCLOSE;HIGH;LOW;TOPEN";
-    /**
-     * 新浪股票上海市场标识
-     */
-    private final String sinaStockShanghai = "sh";
-    /**
-     * 新浪股票深圳市场标识
-     */
-    private final String sinaStockShenzhen = "sz";
-
-
-    public void loopStockMarket() throws IOException {
-        loopShanghai();
-        loopShenzhen();
-        loopchuangye();
-    }
-
-    public void loopStockHistory(){
-
-    }
-
-    /**
-     * 同步上海市场股票信息
-     *
-     * @throws IOException
-     */
-    public void loopShanghai() throws IOException {
-        long start = System.currentTimeMillis();
-        StringBuilder sb;
-        for (int i = 0; i < 2000; i++) {
-            sb = new StringBuilder("6");
-            String s = Integer.toString(i);
-            for (int j = 0; j < 5 - s.length(); j++) {
-                sb.append("0");
-            }
-            sb.append(s);
-            searchStock(sb.toString(), sinaStockShanghai);
-        }
-        logger.info("同步上海市场股票信息总用时:" + (System.currentTimeMillis() - start) + "毫秒");
-    }
-
-    /**
-     * 同步深圳市场股票信息
-     *
-     * @throws IOException
-     */
-    public void loopShenzhen() throws IOException {
-        long start = System.currentTimeMillis();
-        StringBuilder sb;
-        for (int i = 0; i < 2100; i++) {
-            sb = new StringBuilder();
-            String s = Integer.toString(i);
-            for (int j = 0; j < 6 - s.length(); j++) {
-                sb.append("0");
-            }
-            sb.append(s);
-            searchStock(sb.toString(), sinaStockShenzhen);
-        }
-        logger.info("同步深圳市场股票信息:" + (System.currentTimeMillis() - start) + "毫秒");
-
-    }
-
-    /**
-     * 同步创业板股票信息
-     *
-     * @throws IOException
-     */
-    public void loopchuangye() throws IOException {
-        long start = System.currentTimeMillis();
-        StringBuilder sb;
-        for (int i = 0; i < 1000; i++) {
-            sb = new StringBuilder("3");
-            String s = Integer.toString(i);
-            for (int j = 0; j < 5 - s.length(); j++) {
-                sb.append("0");
-            }
-            sb.append(s);
-            searchStock(sb.toString(), sinaStockShenzhen);
-        }
-        logger.info("同步创业板股票信息:" + (System.currentTimeMillis() - start) + "毫秒");
-    }
-
-    public StockInfo crawlStock(String stockId, String stockMarket) {
-        return searchStock(stockId, stockMarket);
-    }
-
 
     /**
      * 搜索指定的股票信息
@@ -137,7 +53,7 @@ public class CrawlService {
      * @return
      * @throws IOException
      */
-//    @Async
+    @Async
     public StockInfo searchStock(String stockId, String stockMarket) {
         StockInfo stockInfo = null;
         StringBuilder sb = new StringBuilder();
@@ -199,6 +115,7 @@ public class CrawlService {
         return stockInfo;
     }
 
+    @Async
     public List<StockRecord> crawlStockHistory(String code, String start, String end) throws IOException, ParseException {
         String url = sotckHIstoryCsvUrl;
         StringBuilder sb = new StringBuilder();
@@ -215,6 +132,7 @@ public class CrawlService {
         String result = httpClient.get(url);
         List<StockRecord> stockRecords = dealStockHistoryInfoResult(result);
         stockRecordRepository.addAll(stockRecords);
+        logger.info("保存" + code + "历史信息成功");
         return stockRecords;
     }
 
