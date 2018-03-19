@@ -38,7 +38,7 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Spring Boot 采集分析处理股票数据")
+                .title("Spring Boot采集分析处理股票数据")
                 .version("1.0")
                 .build();
     }
