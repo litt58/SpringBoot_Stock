@@ -1,8 +1,12 @@
 package com.jzli.repository;
 
+import com.jzli.bean.PageInfo;
 import com.jzli.bean.StockInfo;
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicUpdate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,8 +32,21 @@ public class StockInfoRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<StockInfo> list() {
-        return mongoTemplate.find(new Query(), StockInfo.class);
+    public List<StockInfo> query() {
+        return mongoTemplate.find(new Query().with(new Sort(Sort.Direction.ASC, "id")), StockInfo.class);
+    }
+
+    public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
+        PageInfo<StockInfo> pageInfo = new PageInfo<>(pageNo, pageSize);
+        Query query = new Query();
+        Sort sort = new Sort(Sort.Direction.ASC, "id");
+        Pageable pageable = new PageRequest(pageInfo.getPageNo() - 1, pageInfo.getPageSize(), sort);
+        query.with(pageable);
+        List<StockInfo> stockInfoList = mongoTemplate.find(query, StockInfo.class);
+        pageInfo.setData(stockInfoList);
+        long count = mongoTemplate.count(new Query(), StockInfo.class);
+        pageInfo.setTotal(count);
+        return pageInfo;
     }
 
     /**

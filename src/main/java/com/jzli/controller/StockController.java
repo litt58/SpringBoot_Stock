@@ -1,5 +1,6 @@
 package com.jzli.controller;
 
+import com.jzli.bean.PageInfo;
 import com.jzli.bean.StockInfo;
 import com.jzli.bean.StockRecord;
 import com.jzli.service.StockService;
@@ -58,5 +59,17 @@ public class StockController {
     @ApiOperation(value = "获取个股历史信息中的最低点", httpMethod = "GET", notes = "获取个股历史信息中的最低点")
     public StockRecord getLow(@RequestParam("code") String code, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) throws Exception {
         return stockService.getLow(code, start, end);
+    }
+
+    @RequestMapping("/paginationQuery")
+    @ApiOperation(value = "分页查询股票信息", httpMethod = "GET", notes = "分页查询股票信息")
+    public PageInfo<StockInfo> paginationQuery(@RequestParam(value = "pageNo", required = false) int pageNo, @RequestParam(value = "pageSize", required = false) int pageSize) throws Exception {
+        return stockService.paginationQuery(pageNo, pageSize);
+    }
+
+    @RequestMapping("/query")
+    @ApiOperation(value = "查询股票信息", httpMethod = "GET", notes = "查询股票信息")
+    public List<StockInfo> query() throws Exception {
+        return stockService.query();
     }
 }

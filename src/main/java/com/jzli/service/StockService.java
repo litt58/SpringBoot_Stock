@@ -1,5 +1,6 @@
 package com.jzli.service;
 
+import com.jzli.bean.PageInfo;
 import com.jzli.bean.StockInfo;
 import com.jzli.bean.StockRecord;
 import com.jzli.repository.StockInfoRepository;
@@ -64,5 +65,13 @@ public class StockService {
             date = sdf.parse(time);
         }
         return date;
+    }
+
+    public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
+        return stockInfoRepository.paginationQuery(pageNo, pageSize);
+    }
+
+    public List<StockInfo> query() {
+        return stockInfoRepository.query();
     }
 }

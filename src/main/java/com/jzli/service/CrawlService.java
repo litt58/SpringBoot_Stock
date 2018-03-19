@@ -59,6 +59,10 @@ public class CrawlService {
         loopchuangye();
     }
 
+    public void loopStockHistory(){
+
+    }
+
     /**
      * 同步上海市场股票信息
      *
