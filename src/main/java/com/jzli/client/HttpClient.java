@@ -1,7 +1,10 @@
-package com.jzli.service;
+package com.jzli.client;
 
-import okhttp3.*;
-import org.springframework.stereotype.Service;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -11,14 +14,14 @@ import java.util.concurrent.TimeUnit;
  * =======================================================
  *
  * @Company 产品技术部
- * @Date ：2018/2/1
+ * @Date ：2018/3/19
  * @Author ：李金钊
  * @Version ：0.0.1
  * @Description ：
  * ========================================================
  */
-@Service
-public class HttpService {
+@Component
+public class HttpClient {
     private OkHttpClient client;
 
     @PostConstruct

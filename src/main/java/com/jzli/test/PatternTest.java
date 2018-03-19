@@ -1,4 +1,4 @@
-package com.jzli.service;
+package com.jzli.test;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @Description ：
  * ========================================================
  */
-public class Test {
+public class PatternTest {
     public static void main(String[] args) {
         String line = "#name#,#content#";
         String pattern = "#(.*?)#";

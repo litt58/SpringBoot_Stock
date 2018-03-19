@@ -5,6 +5,7 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -64,6 +65,7 @@ public class StockRecordRepository {
     public List<StockRecord> list(String code, Date start, Date end) {
         Criteria criteria = buildCriteria(code, start, end);
         Query query = new Query(criteria);
+        query.with(new Sort(Sort.Direction.DESC, "date"));
         List<StockRecord> stockRecords = mongoTemplate.find(query, StockRecord.class);
         return stockRecords;
     }
@@ -80,6 +82,7 @@ public class StockRecordRepository {
         Double result = getAggregateResult(results);
         Criteria high = criteria.and("high").is(result);
         Query query = new Query(high);
+        query.with(new Sort(Sort.Direction.DESC, "date"));
         stockRecord = mongoTemplate.findOne(query, StockRecord.class);
         return stockRecord;
     }
@@ -96,6 +99,7 @@ public class StockRecordRepository {
         Double result = getAggregateResult(results);
         Criteria high = criteria.and("low").is(result);
         Query query = new Query(high);
+        query.with(new Sort(Sort.Direction.DESC, "date"));
         stockRecord = mongoTemplate.findOne(query, StockRecord.class);
         return stockRecord;
     }
