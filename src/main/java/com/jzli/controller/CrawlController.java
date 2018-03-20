@@ -35,15 +35,6 @@ public class CrawlController {
     private StockService stockService;
 
     /**
-     * 默认开始时间
-     */
-    private final String start = "20150101";
-    /**
-     * 默认结束时间
-     */
-    private final String end = "20190101";
-
-    /**
      * 新浪股票上海市场标识
      */
     private final String sinaStockShanghai = "sh";
@@ -54,7 +45,9 @@ public class CrawlController {
 
     @RequestMapping("/crawlStock")
     @ApiOperation(value = "搜索个股信息", httpMethod = "GET", notes = "搜索个股信息")
-    public StockInfo crawlStock(@RequestParam("code") String code, @RequestParam("stockMarketCode") String stockMarketCode) throws IOException {
+    public StockInfo crawlStock(@RequestParam("code") String code,
+                                @RequestParam("stockMarketCode") String stockMarketCode)
+            throws IOException {
         return crawlService.searchStock(code, stockMarketCode);
     }
 
@@ -122,26 +115,29 @@ public class CrawlController {
     }
 
     @RequestMapping("/crawlStockHistory")
-    @ApiOperation(value = "抓取个股信息历史信息", httpMethod = "GET", notes = "抓取个股信息历史信息")
-    public void crawlStockHistory(@RequestParam("code") String code, @ApiParam(name = "start", value = "格式为yyyyMMdd") @RequestParam("start") String start, @ApiParam(name = "end", value = "格式为yyyyMMdd") @RequestParam("end") String end) throws Exception {
+    @ApiOperation(value = "抓取指定个股历史信息", httpMethod = "GET", notes = "抓取指定个股历史信息")
+    public void crawlStockHistory(@RequestParam("code") String code,
+                                  @ApiParam(name = "start", value = "格式为yyyyMMdd") @RequestParam("start") String start,
+                                  @ApiParam(name = "end", value = "格式为yyyyMMdd") @RequestParam("end") String end)
+            throws Exception {
         crawlService.crawlStockHistory(code, start, end);
     }
 
     @RequestMapping("/loopStockHistory")
-    @ApiOperation(value = "遍历股票信息", httpMethod = "GET", notes = "遍历股票信息")
+    @ApiOperation(value = "遍历股票历史信息", httpMethod = "GET", notes = "遍历股票历史信息")
     public void loopStockHistory() throws Exception {
         List<StockInfo> query = stockService.query();
         for (StockInfo stockInfo : query) {
-            crawlService.crawlStockHistory(stockInfo.getId(), start, end);
+            crawlService.crawlAllStockHistory(stockInfo.getId());
         }
     }
 
-    @RequestMapping("/crawlNewStockHistory")
+    @RequestMapping("/loopNewestStockHistory")
     @ApiOperation(value = "遍历最新的股票历史信息", httpMethod = "GET", notes = "遍历最新的股票历史信息")
-    public void crawlNewStockHistory() throws Exception {
+    public void loopNewestStockHistory() throws Exception {
         List<StockInfo> query = stockService.query();
         for (StockInfo stockInfo : query) {
-            crawlService.crawlStockHistory(stockInfo.getId(), start, end);
+            crawlService.crawlNewestStockHistory(stockInfo.getId());
         }
     }
 }

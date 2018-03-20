@@ -20,6 +20,15 @@ import java.util.Date;
 public class JodaTimeUtils {
     private static DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
+    /**
+     * 默认开始时间
+     */
+    public static final String DEFAULT_START = "20150101";
+    /**
+     * 默认结束时间
+     */
+    public static final String DEFAULT_END = "20190101";
+
     public static Date parseDate(String time) {
         Date parse = null;
         if (!ObjectUtils.isEmpty(time)) {
@@ -27,5 +36,20 @@ public class JodaTimeUtils {
             parse = dateTime.toDate();
         }
         return parse;
+    }
+
+    /**
+     * 格式化时间
+     *
+     * @param date
+     * @return
+     */
+    public static String getDateString(Date date) {
+        String result = null;
+        if (!ObjectUtils.isEmpty(date)) {
+            DateTime dateTime = new DateTime(date);
+            result = dateTime.toString(format);
+        }
+        return result;
     }
 }

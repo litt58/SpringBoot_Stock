@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
-import java.text.ParseException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -109,8 +109,32 @@ public class CrawlService {
         return stockInfo;
     }
 
+    /**
+     * 获取指定时间范围的股票历史信息
+     *
+     * @param code
+     * @return
+     * @throws Exception
+     */
     @Async
-    public List<StockRecord> crawlStockHistory(String code, String start, String end) throws IOException, ParseException {
+    public List<StockRecord> crawlAllStockHistory(String code) throws Exception {
+        return crawlStockHistory(code, JodaTimeUtils.DEFAULT_START, JodaTimeUtils.DEFAULT_END);
+    }
+
+    /**
+     * 获取最新的股票历史信息
+     *
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    @Async
+    public List<StockRecord> crawlNewestStockHistory(String code) throws Exception {
+        StockRecord stockRecord = stockRecordRepository.getLastHistoryDate(code);
+        return crawlStockHistory(code, stockRecord.getTime(), JodaTimeUtils.getDateString(new Date()));
+    }
+
+    public List<StockRecord> crawlStockHistory(String code, String start, String end) throws Exception {
         String url = sotckHIstoryCsvUrl;
         StringBuilder sb = new StringBuilder();
         if (code.startsWith("6")) {
