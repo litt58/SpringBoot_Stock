@@ -54,22 +54,18 @@ public class CrawlService {
      * @throws IOException
      */
     @Async
-    public StockInfo searchStock(String stockId, String stockMarket) {
-        StockInfo stockInfo = null;
+    public StockInfo searchStock(String stockId, String stockMarket) throws IOException {
+        StockInfo stockInfo;
         StringBuilder sb = new StringBuilder();
         //拼接访问地址
         sb.append(sinaStockInfoUrl).append("=").append(stockMarket).append(stockId);
         //访问接口
-        try {
-            String result = httpClient.get(sb.toString());
-            //处理接口返回
-            stockInfo = dealStockInfoResult(result);
-            if (!ObjectUtils.isEmpty(stockInfo)) {
-                stockInfoRepository.add(stockInfo);
-                logger.info(stockInfo.toString());
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        String result = httpClient.get(sb.toString());
+        //处理接口返回
+        stockInfo = dealStockInfoResult(result);
+        if (!ObjectUtils.isEmpty(stockInfo)) {
+            stockInfoRepository.add(stockInfo);
+            logger.info(stockInfo.toString());
         }
         return stockInfo;
     }

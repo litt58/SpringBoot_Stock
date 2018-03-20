@@ -1,11 +1,14 @@
 package com.jzli.conf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 
 /**
@@ -21,6 +24,7 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 public class ExecutorConfig implements AsyncConfigurer {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public Executor getAsyncExecutor() {
@@ -46,6 +50,14 @@ public class ExecutorConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return null;
+        return new SpringAsyncExceptionHandler();
+    }
+
+    class SpringAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
+
+        @Override
+        public void handleUncaughtException(Throwable ex, Method method, Object... params) {
+            logger.error(ex.getMessage(), ex);
+        }
     }
 }
