@@ -6,6 +6,7 @@ import com.jzli.bean.StockRecord;
 import com.jzli.service.StockService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,19 +46,19 @@ public class StockController {
 
     @RequestMapping("/getStockHistory")
     @ApiOperation(value = "获取个股历史信息", httpMethod = "GET", notes = "获取个股历史信息")
-    public List<StockRecord> getStockHistory(@RequestParam("code") String code, @RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
+    public List<StockRecord> getStockHistory(@RequestParam("code") String code, @ApiParam(name = "start", value = "格式为yyyy-MM-dd") @RequestParam("start") String start, @ApiParam(name = "end", value = "格式为yyyy-MM-dd") @RequestParam("end") String end) throws Exception {
         return stockService.getStockHistory(code, start, end);
     }
 
     @RequestMapping("/getHigh")
     @ApiOperation(value = "获取个股历史信息中的最高点", httpMethod = "GET", notes = "获取个股历史信息中的最高点")
-    public StockRecord getHigh(@RequestParam("code") String code, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) throws Exception {
+    public StockRecord getHigh(@RequestParam("code") String code, @ApiParam(name = "start", value = "格式为yyyy-MM-dd") @RequestParam(value = "start", required = false) String start, @ApiParam(name = "end", value = "格式为yyyy-MM-dd") @RequestParam(value = "end", required = false) String end) throws Exception {
         return stockService.getHigh(code, start, end);
     }
 
     @RequestMapping("/getLow")
     @ApiOperation(value = "获取个股历史信息中的最低点", httpMethod = "GET", notes = "获取个股历史信息中的最低点")
-    public StockRecord getLow(@RequestParam("code") String code, @RequestParam(value = "start", required = false) String start, @RequestParam(value = "end", required = false) String end) throws Exception {
+    public StockRecord getLow(@RequestParam("code") String code, @ApiParam(name = "start", value = "格式为yyyy-MM-dd") @RequestParam(value = "start", required = false) String start, @ApiParam(name = "end", value = "格式为yyyy-MM-dd") @RequestParam(value = "end", required = false) String end) throws Exception {
         return stockService.getLow(code, start, end);
     }
 

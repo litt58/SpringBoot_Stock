@@ -5,6 +5,7 @@ import com.jzli.bean.StockRecord;
 import com.jzli.client.HttpClient;
 import com.jzli.repository.StockInfoRepository;
 import com.jzli.repository.StockRecordRepository;
+import com.jzli.util.JodaTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,8 +37,6 @@ public class CrawlService {
     private StockRecordRepository stockRecordRepository;
     @Autowired
     private HttpClient httpClient;
-
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     private final String sinaStockInfoUrl = "http://hq.sinajs.cn/list";
 
@@ -137,7 +135,7 @@ public class CrawlService {
      *
      * @param result
      */
-    private List<StockRecord> dealStockHistoryInfoResult(String result) throws ParseException {
+    private List<StockRecord> dealStockHistoryInfoResult(String result) {
         List list = null;
         if (!ObjectUtils.isEmpty(result)) {
             list = new LinkedList<StockRecord>();
@@ -149,7 +147,7 @@ public class CrawlService {
                     StockRecord record;
                     record = new StockRecord();
                     record.setTime(strings[0]);
-                    record.setDate(sdf.parse(strings[0]));
+                    record.setDate(JodaTimeUtils.parseDate(strings[0]));
                     record.setCode(strings[1].replace("'", ""));
                     record.setEnd(Double.parseDouble(strings[3]));
                     record.setHigh(Double.parseDouble(strings[4]));
@@ -157,7 +155,6 @@ public class CrawlService {
                     record.setStart(Double.parseDouble(strings[6]));
                     record.setId(record.getCode() + "-" + record.getDate().getTime());
                     list.add(record);
-
                 }
             }
         }

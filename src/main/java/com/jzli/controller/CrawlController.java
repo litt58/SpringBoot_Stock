@@ -5,6 +5,7 @@ import com.jzli.service.CrawlService;
 import com.jzli.service.StockService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -122,7 +123,7 @@ public class CrawlController {
 
     @RequestMapping("/crawlStockHistory")
     @ApiOperation(value = "抓取个股信息历史信息", httpMethod = "GET", notes = "抓取个股信息历史信息")
-    public void crawlStockHistory(@RequestParam("code") String code, @RequestParam("start") String start, @RequestParam("end") String end) throws Exception {
+    public void crawlStockHistory(@RequestParam("code") String code, @ApiParam(name = "start", value = "格式为yyyyMMdd") @RequestParam("start") String start, @ApiParam(name = "end", value = "格式为yyyyMMdd") @RequestParam("end") String end) throws Exception {
         crawlService.crawlStockHistory(code, start, end);
     }
 

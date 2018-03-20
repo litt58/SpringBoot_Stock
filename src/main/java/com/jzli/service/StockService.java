@@ -5,12 +5,11 @@ import com.jzli.bean.StockInfo;
 import com.jzli.bean.StockRecord;
 import com.jzli.repository.StockInfoRepository;
 import com.jzli.repository.StockRecordRepository;
+import com.jzli.util.JodaTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +25,6 @@ import java.util.List;
  */
 @Service
 public class StockService {
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
     @Autowired
     private StockInfoRepository stockInfoRepository;
     @Autowired
@@ -42,29 +39,21 @@ public class StockService {
     }
 
     public List<StockRecord> getStockHistory(String code, String start, String end) throws ParseException {
-        Date startDate = sdf.parse(start);
-        Date endDate = sdf.parse(end);
+        Date startDate = JodaTimeUtils.parseDate(start);
+        Date endDate =  JodaTimeUtils.parseDate(end);
         return stockRecordRepository.list(code, startDate, endDate);
     }
 
     public StockRecord getHigh(String code, String start, String end) throws ParseException {
-        Date startDate = getDate(start);
-        Date endDate = getDate(end);
+        Date startDate = JodaTimeUtils.parseDate(start);
+        Date endDate =  JodaTimeUtils.parseDate(end);
         return stockRecordRepository.getHigh(code, startDate, endDate);
     }
 
     public StockRecord getLow(String code, String start, String end) throws ParseException {
-        Date startDate = getDate(start);
-        Date endDate = getDate(end);
+        Date startDate = JodaTimeUtils.parseDate(start);
+        Date endDate = JodaTimeUtils.parseDate(end);
         return stockRecordRepository.getLow(code, startDate, endDate);
-    }
-
-    public Date getDate(String time) throws ParseException {
-        Date date = null;
-        if (!ObjectUtils.isEmpty(time)) {
-            date = sdf.parse(time);
-        }
-        return date;
     }
 
     public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
