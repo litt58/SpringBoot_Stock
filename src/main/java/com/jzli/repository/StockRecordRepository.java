@@ -79,7 +79,7 @@ public class StockRecordRepository {
                         .as("high")
         ).withOptions(newAggregationOptions().cursor(new BasicDBObject()).build());
         AggregationResults<Double> results = mongoTemplate.aggregate(agg, StockRecord.class, Double.class);
-        Double result = getAggregateResult(results);
+        Double result = (Double) getAggregateResult(results);
         Criteria high = criteria.and("high").is(result);
         Query query = new Query(high);
         query.with(new Sort(Sort.Direction.DESC, "date"));
@@ -96,9 +96,9 @@ public class StockRecordRepository {
                         .as("low")
         ).withOptions(newAggregationOptions().cursor(new BasicDBObject()).build());
         AggregationResults<Double> results = mongoTemplate.aggregate(agg, StockRecord.class, Double.class);
-        Double result = getAggregateResult(results);
-        Criteria high = criteria.and("low").is(result);
-        Query query = new Query(high);
+        Double result = (Double) getAggregateResult(results);
+        Criteria low = criteria.and("low").is(result);
+        Query query = new Query(low);
         query.with(new Sort(Sort.Direction.DESC, "date"));
         stockRecord = mongoTemplate.findOne(query, StockRecord.class);
         return stockRecord;
@@ -127,12 +127,36 @@ public class StockRecordRepository {
     }
 
     /**
+     * 获取最新的股票历史信息
+     *
+     * @param code
+     * @return
+     */
+    public StockRecord getLastHistoryDate(String code) {
+        StockRecord stockRecord;
+        Criteria criteria = buildCriteria(code, null, null);
+        Aggregation agg = newAggregation(
+                match(criteria),
+                group().max("date")
+                        .as("date")
+        ).withOptions(newAggregationOptions().cursor(new BasicDBObject()).build());
+        AggregationResults<Date> results = mongoTemplate.aggregate(agg, StockRecord.class, Date.class);
+        Date result = (Date) getAggregateResult(results);
+
+        Criteria dateCriteria = criteria.and("date").is(result);
+        Query query = new Query(dateCriteria);
+        query.with(new Sort(Sort.Direction.DESC, "date"));
+        stockRecord = mongoTemplate.findOne(query, StockRecord.class);
+        return stockRecord;
+    }
+
+    /**
      * 处理聚合结果
      *
      * @param results
      * @return
      */
-    public Double getAggregateResult(AggregationResults<Double> results) {
+    public Object getAggregateResult(AggregationResults results) {
         DBObject rawResults = results.getRawResults();
         BasicDBObject cursor = (BasicDBObject) rawResults.get("cursor");
         BasicDBList firstBatch = (BasicDBList) cursor.get("firstBatch");
@@ -142,7 +166,8 @@ public class StockRecordRepository {
         for (String s : set) {
             key = s;
         }
-        Double value = (Double) obj.get(key);
-        return value;
+        return obj.get(key);
     }
+
+
 }

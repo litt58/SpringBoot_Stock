@@ -135,4 +135,13 @@ public class CrawlController {
             crawlService.crawlStockHistory(stockInfo.getId(), start, end);
         }
     }
+
+    @RequestMapping("/crawlNewStockHistory")
+    @ApiOperation(value = "遍历最新的股票历史信息", httpMethod = "GET", notes = "遍历最新的股票历史信息")
+    public void crawlNewStockHistory() throws Exception {
+        List<StockInfo> query = stockService.query();
+        for (StockInfo stockInfo : query) {
+            crawlService.crawlStockHistory(stockInfo.getId(), start, end);
+        }
+    }
 }

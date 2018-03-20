@@ -62,6 +62,12 @@ public class StockController {
         return stockService.getLow(code, start, end);
     }
 
+    @RequestMapping("/getLast")
+    @ApiOperation(value = "获取个股历史信息中的最近时间", httpMethod = "GET", notes = "获取个股历史信息中的最近时间")
+    public StockRecord getLastHistoryDate(@RequestParam("code") String code) throws Exception {
+        return stockService.getLastHistoryDate(code);
+    }
+
     @RequestMapping("/paginationQuery")
     @ApiOperation(value = "分页查询股票信息", httpMethod = "GET", notes = "分页查询股票信息")
     public PageInfo<StockInfo> paginationQuery(@RequestParam(value = "pageNo", required = false) int pageNo, @RequestParam(value = "pageSize", required = false) int pageSize) throws Exception {

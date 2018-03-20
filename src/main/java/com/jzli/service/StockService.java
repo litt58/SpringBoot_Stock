@@ -40,13 +40,13 @@ public class StockService {
 
     public List<StockRecord> getStockHistory(String code, String start, String end) throws ParseException {
         Date startDate = JodaTimeUtils.parseDate(start);
-        Date endDate =  JodaTimeUtils.parseDate(end);
+        Date endDate = JodaTimeUtils.parseDate(end);
         return stockRecordRepository.list(code, startDate, endDate);
     }
 
     public StockRecord getHigh(String code, String start, String end) throws ParseException {
         Date startDate = JodaTimeUtils.parseDate(start);
-        Date endDate =  JodaTimeUtils.parseDate(end);
+        Date endDate = JodaTimeUtils.parseDate(end);
         return stockRecordRepository.getHigh(code, startDate, endDate);
     }
 
@@ -54,6 +54,10 @@ public class StockService {
         Date startDate = JodaTimeUtils.parseDate(start);
         Date endDate = JodaTimeUtils.parseDate(end);
         return stockRecordRepository.getLow(code, startDate, endDate);
+    }
+
+    public StockRecord getLastHistoryDate(String code) {
+        return stockRecordRepository.getLastHistoryDate(code);
     }
 
     public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
