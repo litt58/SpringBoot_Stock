@@ -39,6 +39,8 @@ dependencies {
     compile "org.apache.httpcomponents:httpasyncclient:4.1.3"
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.alibaba:fastjson:1.2.45'
+    compile 'joda-time:joda-time:2.9.9'
+
 }
 task wrapper(type: Wrapper) {
     gradleVersion = '2.14'
