@@ -9,13 +9,16 @@ spring:
       enabled: true
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: stock
+      custom:
+            hosts: localhost
+            ports: 27017
+            database: stock
+            authentication-database: admin
+            max-connections-per-host: 20
+            min-connections-per-host: 1
+#      host: localhost
+#      port: 27017
+#      database: stock
 #是否开启swagger (true/false)
 swagger:
   enable: true
-
-
-
-
