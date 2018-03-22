@@ -32,8 +32,9 @@ public class StockInfoRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<StockInfo> query() {
-        return mongoTemplate.find(new Query().with(new Sort(Sort.Direction.ASC, "id")), StockInfo.class);
+    public List<StockInfo> query(StockInfo stockInfo) {
+        Criteria criteria = buildCriteria(stockInfo);
+        return mongoTemplate.find(new Query(criteria).with(new Sort(Sort.Direction.ASC, "id")), StockInfo.class);
     }
 
     public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
@@ -100,4 +101,24 @@ public class StockInfoRepository {
         mongoTemplate.remove(query, StockInfo.class);
     }
 
+
+    private Criteria buildCriteria(StockInfo stockInfo) {
+        Criteria criteria = new Criteria();
+        if (!ObjectUtils.isEmpty(stockInfo)) {
+            if (!ObjectUtils.isEmpty(stockInfo.getId())) {
+                Criteria id = Criteria.where("id").is(stockInfo.getId());
+                criteria = criteria.andOperator(id);
+            }
+            if (!ObjectUtils.isEmpty(stockInfo.getName())) {
+                Criteria name = Criteria.where("name").regex(stockInfo.getName());
+                criteria = criteria.andOperator(name);
+            }
+            if (!ObjectUtils.isEmpty(stockInfo.getStar())) {
+                Criteria star = Criteria.where("star").is(stockInfo.getStar());
+                criteria = criteria.andOperator(star);
+            }
+
+        }
+        return criteria;
+    }
 }

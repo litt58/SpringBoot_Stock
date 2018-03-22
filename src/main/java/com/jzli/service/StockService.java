@@ -64,7 +64,7 @@ public class StockService {
         return stockInfoRepository.paginationQuery(pageNo, pageSize);
     }
 
-    public List<StockInfo> query() {
-        return stockInfoRepository.query();
+    public List<StockInfo> query(StockInfo stockInfo) {
+        return stockInfoRepository.query(stockInfo);
     }
 }

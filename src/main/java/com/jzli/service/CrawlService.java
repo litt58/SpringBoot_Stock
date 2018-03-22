@@ -102,6 +102,7 @@ public class CrawlService {
                     stockInfo = new StockInfo();
                     stockInfo.setId(code);
                     stockInfo.setName(name);
+                    stockInfo.setStar(Boolean.FALSE);
                 }
             }
 

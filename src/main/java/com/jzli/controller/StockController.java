@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -75,8 +76,8 @@ public class StockController {
     }
 
     @RequestMapping("/query")
-    @ApiOperation(value = "查询股票信息", httpMethod = "GET", notes = "查询股票信息")
-    public List<StockInfo> query() throws Exception {
-        return stockService.query();
+    @ApiOperation(value = "查询股票信息", httpMethod = "POST", notes = "查询股票信息")
+    public List<StockInfo> query(@ApiParam(value = "股票信息") @RequestBody StockInfo stockInfo) throws Exception {
+        return stockService.query(stockInfo);
     }
 }

@@ -126,7 +126,7 @@ public class CrawlController {
     @RequestMapping("/loopStockHistory")
     @ApiOperation(value = "遍历股票历史信息", httpMethod = "GET", notes = "遍历股票历史信息")
     public void loopStockHistory() throws Exception {
-        List<StockInfo> query = stockService.query();
+        List<StockInfo> query = stockService.query(null);
         for (StockInfo stockInfo : query) {
             crawlService.crawlAllStockHistory(stockInfo.getId());
         }
@@ -135,7 +135,7 @@ public class CrawlController {
     @RequestMapping("/loopNewestStockHistory")
     @ApiOperation(value = "遍历最新的股票历史信息", httpMethod = "GET", notes = "遍历最新的股票历史信息")
     public void loopNewestStockHistory() throws Exception {
-        List<StockInfo> query = stockService.query();
+        List<StockInfo> query = stockService.query(null);
         for (StockInfo stockInfo : query) {
             crawlService.crawlNewestStockHistory(stockInfo.getId());
         }

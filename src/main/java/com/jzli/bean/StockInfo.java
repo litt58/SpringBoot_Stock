@@ -19,6 +19,8 @@ public class StockInfo {
     private String id;
     @ApiModelProperty("名称")
     private String name;
+    @ApiModelProperty("关注")
+    private Boolean star;
 
     public String getId() {
         return id;
@@ -36,11 +38,20 @@ public class StockInfo {
         this.name = name;
     }
 
+    public Boolean getStar() {
+        return star;
+    }
+
+    public void setStar(Boolean star) {
+        this.star = star;
+    }
+
     @Override
     public String toString() {
         return "StockInfo{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", star=" + star +
                 '}';
     }
 }
