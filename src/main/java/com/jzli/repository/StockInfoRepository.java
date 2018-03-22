@@ -37,15 +37,16 @@ public class StockInfoRepository {
         return mongoTemplate.find(new Query(criteria).with(new Sort(Sort.Direction.ASC, "id")), StockInfo.class);
     }
 
-    public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
+    public PageInfo<StockInfo> paginationQuery(StockInfo stockInfo, Integer pageNo, Integer pageSize) {
+        Criteria criteria = buildCriteria(stockInfo);
         PageInfo<StockInfo> pageInfo = new PageInfo<>(pageNo, pageSize);
-        Query query = new Query();
+        Query query = new Query(criteria);
         Sort sort = new Sort(Sort.Direction.ASC, "id");
         Pageable pageable = new PageRequest(pageInfo.getPageNo() - 1, pageInfo.getPageSize(), sort);
         query.with(pageable);
         List<StockInfo> stockInfoList = mongoTemplate.find(query, StockInfo.class);
         pageInfo.setData(stockInfoList);
-        long count = mongoTemplate.count(new Query(), StockInfo.class);
+        long count = mongoTemplate.count(new Query(criteria), StockInfo.class);
         pageInfo.setTotal(count);
         return pageInfo;
     }
@@ -120,5 +121,21 @@ public class StockInfoRepository {
 
         }
         return criteria;
+    }
+
+    public StockInfo star(String id) {
+        StockInfo stockInfo = get(id);
+        if (stockInfo.getStar()) {
+            stockInfo.setStar(Boolean.FALSE);
+        } else {
+            stockInfo.setStar(Boolean.TRUE);
+        }
+        Query query = new Query(Criteria.where("id").is(id));
+        BasicDBObject basicDBObject = new BasicDBObject();
+        basicDBObject.put("star", stockInfo.getStar());
+        Update update = new BasicUpdate(new BasicDBObject("$set", basicDBObject));
+        mongoTemplate.updateFirst(query, update, StockInfo.class);
+        stockInfo = get(id);
+        return stockInfo;
     }
 }

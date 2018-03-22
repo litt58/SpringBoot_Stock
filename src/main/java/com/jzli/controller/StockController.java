@@ -39,6 +39,12 @@ public class StockController {
         return stockService.getStockInfo(id);
     }
 
+    @RequestMapping("/star")
+    @ApiOperation(value = "关注个股信息", httpMethod = "GET", notes = "关注个股信息")
+    public StockInfo star(@RequestParam("id") String id) throws IOException {
+        return stockService.star(id);
+    }
+
     @RequestMapping("/delete")
     @ApiOperation(value = "删除个股信息", httpMethod = "GET", notes = "删除个股信息")
     public void delete(@RequestParam("id") String id) throws IOException {
@@ -69,10 +75,11 @@ public class StockController {
         return stockService.getLastHistoryDate(code);
     }
 
+
     @RequestMapping("/paginationQuery")
-    @ApiOperation(value = "分页查询股票信息", httpMethod = "GET", notes = "分页查询股票信息")
-    public PageInfo<StockInfo> paginationQuery(@RequestParam(value = "pageNo", required = false) int pageNo, @RequestParam(value = "pageSize", required = false) int pageSize) throws Exception {
-        return stockService.paginationQuery(pageNo, pageSize);
+    @ApiOperation(value = "分页查询股票信息", httpMethod = "POST", notes = "分页查询股票信息")
+    public PageInfo<StockInfo> paginationQuery(@ApiParam(value = "股票信息") @RequestBody StockInfo stockInfo, @RequestParam(value = "pageNo", required = false) Integer pageNo, @RequestParam(value = "pageSize", required = false) Integer pageSize) throws Exception {
+        return stockService.paginationQuery(stockInfo, pageNo, pageSize);
     }
 
     @RequestMapping("/query")

@@ -1,5 +1,7 @@
 package com.jzli.bean;
 
+import org.springframework.util.ObjectUtils;
+
 import java.util.List;
 
 /**
@@ -13,38 +15,38 @@ import java.util.List;
  * ========================================================
  */
 public class PageInfo<T> {
-    private final int DEFAULT_PAGE_SIZE = 50;
-    private final int DEFAULT_PATE_NO = 1;
+    private final Integer DEFAULT_PAGE_SIZE = 50;
+    private final Integer DEFAULT_PATE_NO = 1;
 
-    private int pageNo;
-    private int pageSize;
+    private Integer pageNo;
+    private Integer pageSize;
     private Long totalPageNo;
     private Long total;
     private List<T> data;
 
-    public PageInfo(int pageNo, int pageSize) {
+    public PageInfo(Integer pageNo, Integer pageSize) {
         setPageNo(pageNo);
         setPageSize(pageSize);
     }
 
-    public int getPageNo() {
+    public Integer getPageNo() {
         return pageNo;
     }
 
-    public void setPageNo(int pageNo) {
-        if (pageNo <= 0) {
+    public void setPageNo(Integer pageNo) {
+        if (ObjectUtils.isEmpty(pageNo) || pageNo <= 0) {
             this.pageNo = DEFAULT_PATE_NO;
         } else {
             this.pageNo = pageNo;
         }
     }
 
-    public int getPageSize() {
+    public Integer getPageSize() {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
-        if (pageSize <= 0) {
+    public void setPageSize(Integer pageSize) {
+        if (ObjectUtils.isEmpty(pageSize) || pageSize <= 0) {
             this.pageSize = DEFAULT_PAGE_SIZE;
         } else {
             this.pageSize = pageSize;

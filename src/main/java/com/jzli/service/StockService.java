@@ -60,11 +60,15 @@ public class StockService {
         return stockRecordRepository.getLastHistoryDate(code);
     }
 
-    public PageInfo<StockInfo> paginationQuery(int pageNo, int pageSize) {
-        return stockInfoRepository.paginationQuery(pageNo, pageSize);
+    public PageInfo<StockInfo> paginationQuery(StockInfo stockInfo,Integer pageNo, Integer pageSize) {
+        return stockInfoRepository.paginationQuery(stockInfo,pageNo, pageSize);
     }
 
     public List<StockInfo> query(StockInfo stockInfo) {
         return stockInfoRepository.query(stockInfo);
+    }
+
+    public StockInfo star(String id) {
+        return stockInfoRepository.star(id);
     }
 }
