@@ -142,7 +142,6 @@ public class StockRecordRepository {
         ).withOptions(newAggregationOptions().cursor(new BasicDBObject()).build());
         AggregationResults<Date> results = mongoTemplate.aggregate(agg, StockRecord.class, Date.class);
         Date result = (Date) getAggregateResult(results);
-
         Criteria dateCriteria = criteria.and("date").is(result);
         Query query = new Query(dateCriteria);
         query.with(new Sort(Sort.Direction.DESC, "date"));
@@ -160,14 +159,15 @@ public class StockRecordRepository {
         DBObject rawResults = results.getRawResults();
         BasicDBObject cursor = (BasicDBObject) rawResults.get("cursor");
         BasicDBList firstBatch = (BasicDBList) cursor.get("firstBatch");
-        BasicDBObject obj = (BasicDBObject) firstBatch.get(0);
-        Set<String> set = obj.keySet();
-        String key = null;
-        for (String s : set) {
-            key = s;
+        if (firstBatch.size() > 0) {
+            BasicDBObject obj = (BasicDBObject) firstBatch.get(0);
+            Set<String> set = obj.keySet();
+            String key = null;
+            for (String s : set) {
+                key = s;
+            }
+            return obj.get(key);
         }
-        return obj.get(key);
+        return null;
     }
-
-
 }

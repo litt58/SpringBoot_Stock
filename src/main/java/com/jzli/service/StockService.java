@@ -9,6 +9,8 @@ import com.jzli.repository.StockRecordRepository;
 import com.jzli.util.JodaTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StopWatch;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -75,19 +77,26 @@ public class StockService {
     }
 
     public List<RecommendStockInfo> recommend(StockInfo stockInfo, String start, String end) throws ParseException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         List<StockInfo> query = query(stockInfo);
         List<RecommendStockInfo> list = new LinkedList<>();
         for (StockInfo stock : query) {
             StockRecord low = getLow(stock.getId(), start, end);
-            StockRecord record = getLastHistoryDate(stock.getId());
-            RecommendStockInfo recommendStockInfo = new RecommendStockInfo();
-            recommendStockInfo.setStockInfo(stock);
-            recommendStockInfo.setCurrent(record);
-            recommendStockInfo.setLow(low);
-            recommendStockInfo.setLowRate(record.getLow() / low.getLow());
-            list.add(recommendStockInfo);
+            if (!ObjectUtils.isEmpty(low)) {
+                StockRecord record = getLastHistoryDate(stock.getId());
+                RecommendStockInfo recommendStockInfo = new RecommendStockInfo();
+                recommendStockInfo.setStockInfo(stock);
+                recommendStockInfo.setCurrent(record);
+                recommendStockInfo.setLow(low);
+                recommendStockInfo.setLowRate(record.getLow() / low.getLow());
+                list.add(recommendStockInfo);
+            }
         }
         list.sort((o1, o2) -> o1.compareTo(o2));
+        stopWatch.stop();
+        double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
+        System.out.println("总用时：" + totalTimeSeconds);
         return list;
     }
 }
