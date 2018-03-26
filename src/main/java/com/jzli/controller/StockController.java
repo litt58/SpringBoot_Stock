@@ -94,4 +94,10 @@ public class StockController {
     public List<RecommendStockInfo> recommend(@ApiParam(value = "股票信息") @RequestBody StockInfo stockInfo, @ApiParam(name = "start", value = "格式为yyyy-MM-dd") @RequestParam(value = "start", required = false) String start, @ApiParam(name = "end", value = "格式为yyyy-MM-dd") @RequestParam(value = "end", required = false) String end) throws Exception {
         return stockService.recommend(stockInfo,start,end);
     }
+
+    @RequestMapping("/removeHistory")
+    @ApiOperation(value = "删除个股历史信息", httpMethod = "GET", notes = "删除个股历史信息")
+    public void removeHistory(@RequestParam("code") String code) throws Exception {
+         stockService.removeHistory(code);
+    }
 }

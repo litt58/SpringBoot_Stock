@@ -170,4 +170,10 @@ public class StockRecordRepository {
         }
         return null;
     }
+
+    public void removeHistory(String code) {
+        Criteria criteria = buildCriteria(code, null, null);
+        Query query = new Query(criteria);
+        mongoTemplate.remove(query, StockRecord.class);
+    }
 }

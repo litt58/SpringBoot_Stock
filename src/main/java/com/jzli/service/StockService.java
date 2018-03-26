@@ -99,4 +99,8 @@ public class StockService {
         System.out.println("总用时：" + totalTimeSeconds);
         return list;
     }
+
+    public void removeHistory(String code) {
+        stockRecordRepository.removeHistory(code);
+    }
 }
