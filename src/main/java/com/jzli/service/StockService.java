@@ -93,7 +93,31 @@ public class StockService {
                 list.add(recommendStockInfo);
             }
         }
-        list.sort((o1, o2) -> o1.compareTo(o2));
+        list.sort((o1, o2) -> o1.compareLow(o1, o2));
+        stopWatch.stop();
+        double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
+        System.out.println("总用时：" + totalTimeSeconds);
+        return list;
+    }
+
+    public List<RecommendStockInfo> unrecommended(StockInfo stockInfo, String start, String end) throws ParseException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        List<StockInfo> query = query(stockInfo);
+        List<RecommendStockInfo> list = new LinkedList<>();
+        for (StockInfo stock : query) {
+            StockRecord high = getHigh(stock.getId(), start, end);
+            if (!ObjectUtils.isEmpty(high)) {
+                StockRecord record = getLastHistoryDate(stock.getId());
+                RecommendStockInfo recommendStockInfo = new RecommendStockInfo();
+                recommendStockInfo.setStockInfo(stock);
+                recommendStockInfo.setCurrent(record);
+                recommendStockInfo.setHigh(high);
+                recommendStockInfo.setHighRate(record.getHigh() / high.getHigh());
+                list.add(recommendStockInfo);
+            }
+        }
+        list.sort((o1, o2) -> o1.compareHigh(o1, o2));
         stopWatch.stop();
         double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
         System.out.println("总用时：" + totalTimeSeconds);

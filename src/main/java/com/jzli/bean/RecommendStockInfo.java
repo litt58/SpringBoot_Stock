@@ -10,7 +10,7 @@ package com.jzli.bean;
  * @Description ：
  * ========================================================
  */
-public class RecommendStockInfo implements Comparable {
+public class RecommendStockInfo {
     private StockInfo stockInfo;
     private StockRecord low;
     private StockRecord high;
@@ -79,12 +79,20 @@ public class RecommendStockInfo implements Comparable {
                 '}';
     }
 
-    @Override
-    public int compareTo(Object o) {
-        if (o instanceof RecommendStockInfo) {
-            RecommendStockInfo recommendStockInfo = (RecommendStockInfo) o;
-            return this.getLowRate() > recommendStockInfo.getLowRate() ? 1 : -1;
+    public int compareLow(RecommendStockInfo o1, RecommendStockInfo o2) {
+        if (o1.getLowRate() == o2.getLowRate()) {
+            return o1.getStockInfo().getId().compareTo(o2.getStockInfo().getId());
+        } else {
+            return o1.getLowRate() > o2.getLowRate() ? 1 : -1;
         }
-        return 0;
     }
+
+    public int compareHigh(RecommendStockInfo o1, RecommendStockInfo o2) {
+        if (o1.getHighRate() == o2.getHighRate()) {
+            return o1.getStockInfo().getId().compareTo(o2.getStockInfo().getId());
+        } else {
+            return o1.getHighRate() > o2.getHighRate() ? -1 : 1;
+        }
+    }
+
 }
