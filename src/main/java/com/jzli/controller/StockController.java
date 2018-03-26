@@ -1,6 +1,7 @@
 package com.jzli.controller;
 
 import com.jzli.bean.PageInfo;
+import com.jzli.bean.RecommendStockInfo;
 import com.jzli.bean.StockInfo;
 import com.jzli.bean.StockRecord;
 import com.jzli.service.StockService;
@@ -86,5 +87,11 @@ public class StockController {
     @ApiOperation(value = "查询股票信息", httpMethod = "POST", notes = "查询股票信息")
     public List<StockInfo> query(@ApiParam(value = "股票信息") @RequestBody StockInfo stockInfo) throws Exception {
         return stockService.query(stockInfo);
+    }
+
+    @RequestMapping("/recommend")
+    @ApiOperation(value = "推荐股票信息", httpMethod = "POST", notes = "推荐股票信息")
+    public List<RecommendStockInfo> recommend(@ApiParam(value = "股票信息") @RequestBody StockInfo stockInfo, @ApiParam(name = "start", value = "格式为yyyy-MM-dd") @RequestParam(value = "start", required = false) String start, @ApiParam(name = "end", value = "格式为yyyy-MM-dd") @RequestParam(value = "end", required = false) String end) throws Exception {
+        return stockService.recommend(stockInfo,start,end);
     }
 }

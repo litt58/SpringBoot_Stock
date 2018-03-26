@@ -1,6 +1,7 @@
 package com.jzli.service;
 
 import com.jzli.bean.PageInfo;
+import com.jzli.bean.RecommendStockInfo;
 import com.jzli.bean.StockInfo;
 import com.jzli.bean.StockRecord;
 import com.jzli.repository.StockInfoRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -60,8 +62,8 @@ public class StockService {
         return stockRecordRepository.getLastHistoryDate(code);
     }
 
-    public PageInfo<StockInfo> paginationQuery(StockInfo stockInfo,Integer pageNo, Integer pageSize) {
-        return stockInfoRepository.paginationQuery(stockInfo,pageNo, pageSize);
+    public PageInfo<StockInfo> paginationQuery(StockInfo stockInfo, Integer pageNo, Integer pageSize) {
+        return stockInfoRepository.paginationQuery(stockInfo, pageNo, pageSize);
     }
 
     public List<StockInfo> query(StockInfo stockInfo) {
@@ -70,5 +72,22 @@ public class StockService {
 
     public StockInfo star(String id) {
         return stockInfoRepository.star(id);
+    }
+
+    public List<RecommendStockInfo> recommend(StockInfo stockInfo, String start, String end) throws ParseException {
+        List<StockInfo> query = query(stockInfo);
+        List<RecommendStockInfo> list = new LinkedList<>();
+        for (StockInfo stock : query) {
+            StockRecord low = getLow(stock.getId(), start, end);
+            StockRecord record = getLastHistoryDate(stock.getId());
+            RecommendStockInfo recommendStockInfo = new RecommendStockInfo();
+            recommendStockInfo.setStockInfo(stock);
+            recommendStockInfo.setCurrent(record);
+            recommendStockInfo.setLow(low);
+            recommendStockInfo.setLowRate(record.getLow() / low.getLow());
+            list.add(recommendStockInfo);
+        }
+        list.sort((o1, o2) -> o1.compareTo(o2));
+        return list;
     }
 }
