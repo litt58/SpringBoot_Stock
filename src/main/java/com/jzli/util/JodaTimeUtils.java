@@ -19,6 +19,7 @@ import java.util.Date;
  */
 public class JodaTimeUtils {
     private static DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
+    private static DateTimeFormatter format2 = DateTimeFormat.forPattern("yyyyMMdd");
 
     /**
      * 默认开始时间
@@ -38,6 +39,15 @@ public class JodaTimeUtils {
         return parse;
     }
 
+    public static Date parseDate2(String time) {
+        Date parse = null;
+        if (!ObjectUtils.isEmpty(time)) {
+            DateTime dateTime = DateTime.parse(time, format2);
+            parse = dateTime.toDate();
+        }
+        return parse;
+    }
+
     /**
      * 格式化时间
      *
@@ -49,6 +59,21 @@ public class JodaTimeUtils {
         if (!ObjectUtils.isEmpty(date)) {
             DateTime dateTime = new DateTime(date);
             result = dateTime.toString(format);
+        }
+        return result;
+    }
+
+    /**
+     * 格式化时间
+     *
+     * @param date
+     * @return
+     */
+    public static String getDateString2(Date date) {
+        String result = null;
+        if (!ObjectUtils.isEmpty(date)) {
+            DateTime dateTime = new DateTime(date);
+            result = dateTime.toString(format2);
         }
         return result;
     }

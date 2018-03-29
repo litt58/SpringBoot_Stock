@@ -132,7 +132,7 @@ public class CrawlService {
     @Async
     public List<StockRecord> crawlNewestStockHistory(String code) throws Exception {
         StockRecord stockRecord = stockRecordRepository.getLastHistoryDate(code);
-        return crawlStockHistory(code, stockRecord.getTime(), JodaTimeUtils.getDateString(new Date()));
+        return crawlStockHistory(code, stockRecord.getTime().replace("-",""), JodaTimeUtils.getDateString2(new Date()));
     }
 
     public List<StockRecord> crawlStockHistory(String code, String start, String end) throws Exception {
