@@ -130,9 +130,15 @@ public class CrawlService {
      * @throws Exception
      */
     @Async
-    public List<StockRecord> crawlNewestStockHistory(String code) throws Exception {
+    public void crawlNewestStockHistory(String code) throws Exception {
         StockRecord stockRecord = stockRecordRepository.getLastHistoryDate(code);
-        return crawlStockHistory(code, stockRecord.getTime().replace("-",""), JodaTimeUtils.getDateString2(new Date()));
+        if (stockRecord != null) {
+            //历史数据，只需要遍历最新数据
+            crawlStockHistory(code, stockRecord.getTime().replace("-", ""), JodaTimeUtils.getDateString2(new Date()));
+        } else {
+            //新数据，需要抓取全部的数据
+            crawlAllStockHistory(code);
+        }
     }
 
     public List<StockRecord> crawlStockHistory(String code, String start, String end) throws Exception {
